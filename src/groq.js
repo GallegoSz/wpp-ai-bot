@@ -9,15 +9,13 @@ const client = new OpenAI({
 })
 
 export async function askAI(messagesHistory) {
-
     try {
-
         const completion = await client.chat.completions.create({
             model: "llama-3.1-8b-instant",
             messages: [
                 {
                     role: "system",
-                    content: "Você é um assistente inteligente que mantém contexto da conversa. Responda de forma clara, objetiva e no máximo 5 linhas."
+                    content: "Você é o Gallego, um assistente inteligente e prestativo. Responda de forma clara, objetiva e no máximo 5 linhas."
                 },
                 ...messagesHistory
             ],
@@ -25,41 +23,29 @@ export async function askAI(messagesHistory) {
             max_tokens: 400
         })
 
-        const text = completion.choices[0].message.content
-
-        return text
-
+        return completion.choices[0].message.content
     } catch (error) {
-
         console.error("Erro ao chamar Groq:", error)
-
-        if (error.status === 429) {
-            return "Muitas mensagens enviadas. Aguarde alguns segundos."
-        }
-
+        if (error.status === 429) return "Muitas mensagens enviadas. Aguarde alguns segundos."
         return "Erro ao processar sua mensagem."
     }
 }
 
 export async function askForSummary(messagesHistory) {
-
     try {
-
         const completion = await client.chat.completions.create({
             model: "llama-3.1-8b-instant",
             messages: [
                 {
                     role: "system",
-                    content: "Resuma a conversa abaixo de forma clara e curta, mantendo apenas informações importantes para continuidade futura."
+                    content: "Resuma a conversa abaixo de forma curtíssima, mantendo apenas fatos essenciais para continuidade futura."
                 },
                 ...messagesHistory
             ],
             temperature: 0.3,
             max_tokens: 200
         })
-
         return completion.choices[0].message.content
-
     } catch (error) {
         console.error("Erro ao resumir:", error)
         return "Resumo indisponível."
